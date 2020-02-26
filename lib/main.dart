@@ -1,11 +1,9 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
 
 import 'package:expenses/components/chart.dart';
 import 'package:expenses/components/transaction_form.dart';
-
 import 'components/transaction_list.dart';
-import 'package:flutter/material.dart';
-
 import 'models/transaction.dart';
 
 main(List<String> args) {
@@ -24,10 +22,14 @@ class ExpensesApp extends StatelessWidget {
         fontFamily: 'Nunito',
         textTheme: ThemeData.light().textTheme.copyWith(
           title: TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
+            fontFamily: 'OpenSans',
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+          ),
+          button: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
@@ -53,42 +55,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [
-    Transaction(
-      id: 't1',
-      title: 'Novo Tênis de Corrida',
-      value: 310.76,
-      date: DateTime.now().subtract(Duration(days: 3)),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Conta de Luz',
-      value: 120.41,
-      date: DateTime.now().subtract(Duration(days: 4)),
-    ),
-    Transaction(
-      id: 't3',
-      title: 'Conta de Água',
-      value: 215.03,
-      date: DateTime.now().subtract(Duration(days: 4)),
-    ),
-    Transaction(
-      id: 't4',
-      title: 'Conta Antiga',
-      value: 210.76,
-      date: DateTime.now().subtract(Duration(days: 23)),
-    ),
-    // Transaction(
-    //   id: 't20',
-    //   title: 'Telefone',
-    //   value: 190.41,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: 't13',
-    //   title: 'Cinema',
-    //   value: 15.27,
-    //   date: DateTime.now(),
-    // ),
+    
   ];
 
   List<Transaction> get _recentTransactions {
@@ -105,12 +72,18 @@ class _MyHomePageState extends State<MyHomePage> {
     } );
   }
 
-  _addTransaction(String title, double value) {
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tr) => tr.id == id);
+    });
+  }
+
+  _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
       value: value,
-      date: DateTime.now(),
+      date: date,
     );
     setState(() {
       _transactions.add(newTransaction);
@@ -139,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart(_recentTransactions),
-            TransactionList(_transactions),
+            TransactionList(_transactions, _removeTransaction),
           ],
         ),
       ),

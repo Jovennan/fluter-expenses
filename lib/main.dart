@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:expenses/components/chart.dart';
 import 'package:expenses/components/transaction_form.dart';
+import 'package:flutter/services.dart';
 import 'components/transaction_list.dart';
 import 'models/transaction.dart';
 
@@ -15,6 +16,7 @@ class ExpensesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.purple,
@@ -94,8 +96,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+
+    final appBar = AppBar(
         title: Text(
           'Despesas Pessoais'
         ),
@@ -105,14 +107,25 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => _openTransactionFormModal(context),
           ),
         ],
-      ),
+      );
+
+    final availabelHeight = MediaQuery.of(context).size.height 
+    - appBar.preferredSize.height - MediaQuery.of(context).padding.top;
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_transactions, _removeTransaction),
+            Container(
+              height: availabelHeight * 0.40,
+              child: Chart(_recentTransactions),
+            ),
+            Container(
+              height: availabelHeight * 0.60,
+              child: TransactionList(_transactions, _removeTransaction),
+            ),
           ],
         ),
       ),
